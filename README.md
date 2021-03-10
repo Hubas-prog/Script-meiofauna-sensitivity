@@ -15,9 +15,7 @@ The current deposit corresponds only to the statistical analysis. The raw data a
 List of packages :
 
 library(ade4) => for multivariate statistics.
-
 library(factoextra)=> for improved data visualization of ade4 outputs.
-
 library(cowplot)=> for publication-quality figures with 'ggplot2'.
 
 Script correspondance:
