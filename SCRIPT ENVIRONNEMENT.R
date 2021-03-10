@@ -19,7 +19,7 @@ library(plotrix)
 library(factoextra)
 
 #####################
-# PACKAGES
+# AESTHETICS
 #####################
 my.palette<-colorRampPalette(c("purple","black","red1","green3","blue"))
 
