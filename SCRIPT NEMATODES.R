@@ -1,152 +1,158 @@
-#ingÈdients#
-library(ggplot2)#
-library(ade4)#
-library(vegan)#
-library(RVAideMemoire)#
-library(emmeans)#
-library(pls)#
-library(plotrix)#
-library(wordcloud)
+########################### SCRIPT ################################
+# First assessment of the benthic meiofauna sensitivity to low human-impacted mangroves in French Guiana
+# by : Claire Michelet, Daniela Zeppilli, C√©dric Hubas, Elisa Baldrighi, Philippe Cuny, Guillaume Dirberg, C√©cile Militon, Romain Walcker, Dominique Lamy, Ronan J√©z√©quel, Justine Receveur, Franck Gilbert, Amonda El Houssainy, Aur√©lie Dufour, Lars-Eric Heimb√ºrger-Boavida, Isabelle Bihannic, L√©a Sylvi, Baptiste Vivier, Emma Michaud
+# For publication in Forest (MDPI)
+# *Corresponding author : emma.michaud@univ-brest.fr
+########################### SCRIPT ################################
 
-# cr√©ation d'une palette de couleurs personalis√©e#
-my.palette=colorRampPalette(c("black","red3","#009E73","blue"))
+#####################
+# PACKAGES
+#####################
+library(ade4)
+library(vegan)
+library(scales)
 
-# Importation des tableaux :#
-###DONNEES EN POURCENTAGES##
+#####################
+# AESTHETICS
+#####################
+my.palette<-colorRampPalette(c("purple","black","red1","green3","blue"))
 
-##POURCENT NEMAD BACT##
-nemad.pourcent.bact=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_pourcent_bacterivores.csv",h=T,sep=";",dec=",")
-#nemad.pourcent.bact=read.csv("Nematodes_pourcent_bacterivores.csv",h=T,sep=";",dec=",")
+#####################
+# DATA upload
+#####################
+
+# Bacterivorous nematodes - density (in %)
+nemad.pourcent.bact<-read.csv("Nematodes_pourcent_bacterivores.csv",
+                              h=T,sep=";",dec=",")
+# Detritivorous nematodes - density (in %)
+nemad.pourcent.detri<-read.csv("Nematodes_pourcent_detritivores.csv",
+                               h=T,sep=";",dec=",")
+# Grazers nematodes - density (in %)
+nemad.pourcent.brou<-read.csv("Nematodes_pourcent_brouteurs.csv",
+                              h=T,sep=";",dec=",")
+# Omnivorous/Predators nematodes - density (in %)
+nemad.pourcent.pred<-read.csv("Nematodes_pourcent_predateurs.csv",
+                              h=T,sep=";",dec=",")
+
+# verification that all statistical individuals are paired
 names(nemad.pourcent.bact)
-#POURCENT NEMAD DETRITIVORES#
-nemad.pourcent.detri=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_pourcent_detritivores.csv",h=T,sep=";",dec=",")
-#nemad.pourcent.detri=read.csv("Nematodes_pourcent_detritivores.csv",h=T,sep=";",dec=",")
 names(nemad.pourcent.detri)
-#POURCENT NEMAD BROUTEURS#
-nemad.pourcent.brou=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_pourcent_brouteurs.csv",h=T,sep=";",dec=",")
-#nemad.pourcent.brou=read.csv("Nematodes_pourcent_brouteurs.csv",h=T,sep=";",dec=",")
 names(nemad.pourcent.brou)
-#POURCENT NEMAD PREDATEURS#
-nemad.pourcent.pred=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_pourcent_predateurs.csv",h=T,sep=";",dec=",")
-#nemad.pourcent.pred=read.csv("Nematodes_pourcent_predateurs.csv",h=T,sep=";",dec=",")
 names(nemad.pourcent.pred)
 
+data.frame(nemad.pourcent.bact[,1],
+           nemad.pourcent.detri[,1],
+           nemad.pourcent.brou[,1],
+           nemad.pourcent.pred[,1])
 
+# final datasett
+DATA<-cbind(nemad.pourcent.bact[,2:17],
+            nemad.pourcent.detri[,2:27],
+            nemad.pourcent.brou[,2:27],
+            nemad.pourcent.pred[,2:8])
 
-##POURCENT NEMAB BACT##
-nemab.pourcent.bact=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_biomasscm3_pourcent_bacterivores.csv",h=T,sep=";",dec=",")
-#nemab.pourcent.bact=read.csv("Nematodes_biomasscm3_pourcent_bacterivores.csv",h=T,sep=";",dec=",")
-names(nemab.pourcent.bact)
-#POURCENT NEMAB DETRITIVORES#
-nemab.pourcent.detri=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_biomasscm3_pourcent_detritivores.csv",h=T,sep=";",dec=",")
-#nemab.pourcent.detri=read.csv("Nematodes_biomasscm3_pourcent_detritivores.csv",h=T,sep=";",dec=",")
-names(nemab.pourcent.detri)
-#POURCENT NEMAB BROUTEURS#
-nemab.pourcent.brou=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_biomasscm3_pourcent_brouteurs.csv",h=T,sep=";",dec=",")
-#nemab.pourcent.brou=read.csv("Nematodes_biomasscm3_pourcent_brouteurs.csv",h=T,sep=";",dec=",")
-names(nemab.pourcent.brou)
-#POURCENT NEMAB PREDATEURS#
-nemab.pourcent.pred=read.csv("C:/Users/clair/OneDrive/Bureau/papier-meio/Nematodes_biomasscm3_pourcent_predateurs.csv",h=T,sep=";",dec=",")
-#nemab.pourcent.pred=read.csv("Nematodes_biomasscm3_pourcent_predateurs.csv",h=T,sep=";",dec=",")
-names(nemab.pourcent.pred)
+DATA$sites<-substr(nemad.pourcent.bact$groupe,1,2)
+DATA$layer<-paste("L",substr(nemad.pourcent.bact$groupe,4,4),sep="")
+DATA$core<-substr(nemad.pourcent.bact$groupe,3,3)
+names(DATA)
 
+bloc<-c(dim(nemad.pourcent.bact[,2:17])[2],
+       dim(nemad.pourcent.detri[,2:27])[2],
+       dim(nemad.pourcent.brou[,2:27])[2],
+       dim(nemad.pourcent.pred[,2:8])[2])
 
+#####################
+# Multiple FActor Analysis (unsupervised)
+#####################
 
-# verification des individus statistiques (doivent Ítre appariÈs)#
-data.frame(enz[,1],AG2[,1],conta[,1],pigments[,1],enviro[,1],bact[,1],gconta[,1],AG.g[,1])
+# Extraction of eigen values
+eig.nemad.pourcent.bact<-dudi.pca(nemad.pourcent.bact[,2:17],
+                                  scannf=F,nf=2)$eig 
+eig.nemad.pourcent.detri<-dudi.pca(nemad.pourcent.detri[,2:27],
+                                   scannf=F,nf=2)$eig
+eig.nemad.pourcent.brou<-dudi.pca(nemad.pourcent.brou[,2:27],
+                                  scannf=F,nf=2)$eig 
+eig.nemad.pourcent.pred<-dudi.pca(nemad.pourcent.pred[,2:8],
+                                  scannf=F,nf=2)$eig
 
+# MFA
+names(DATA)
+MFA<-dudi.pca(DATA[,1:75],col.w=rep(c(1/eig.nemad.pourcent.bact[1],
+                                      1/eig.nemad.pourcent.detri[1],
+                                      1/eig.nemad.pourcent.brou[1],
+                                      1/eig.nemad.pourcent.pred[1]),
+                                    bloc),
+              scannf=F,
+              nf=2)
 
-# Standardisation#
-vp.nemad.bact=dudi.pca(nemad.bact[,2:17],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.bact.std=nemad.bact[,2:17]/vp.nemad.bact[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemad.detri=dudi.pca(nemad.detri[,2:27],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.detri.std=nemad.detri[,2:27]/vp.nemad.detri[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemad.brou=dudi.pca(nemad.brou[,2:27],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.brou.std=nemad.brou[,2:27]/vp.nemad.brou[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemad.pred=dudi.pca(nemad.pred[,2:8],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.pred.std=nemad.pred[,2:8]/vp.nemad.pred[1] # pondÈration du tableau contaminants par la premiËre vp#
+varexp<-MFA$eig*100/sum(MFA$eig)
+fact<-factor(DATA$sites)
 
-vp.nemab.bact=dudi.pca(nemab.bact[,2:17],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.bact.std=nemab.bact[,2:17]/vp.nemab.bact[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemab.detri=dudi.pca(nemab.detri[,2:27],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.detri.std=nemab.detri[,2:27]/vp.nemab.detri[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemab.brou=dudi.pca(nemab.brou[,2:26],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.brou.std=nemab.brou[,2:26]/vp.nemab.brou[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemab.pred=dudi.pca(nemab.pred[,2:8],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.pred.std=nemab.pred[,2:8]/vp.nemab.pred[1] # pondÈration du tableau contaminants par la premiËre vp#
+#####################
+# Between class MFA (supervised MFA analysis with factor = sites)
+#####################
 
-##NEMA POURCENTAGE DENSITY GT##
-vp.nemad.pourcent.bact=dudi.pca(nemad.pourcent.bact[,2:17],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.pourcent.bact.std=nemad.pourcent.bact[,2:17]/vp.nemad.pourcent.bact[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemad.pourcent.detri=dudi.pca(nemad.pourcent.detri[,2:27],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.pourcent.detri.std=nemad.pourcent.detri[,2:27]/vp.nemad.pourcent.detri[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemad.pourcent.brou=dudi.pca(nemad.pourcent.brou[,2:27],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.pourcent.brou.std=nemad.pourcent.brou[,2:27]/vp.nemad.pourcent.brou[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemad.pourcent.pred=dudi.pca(nemad.pourcent.pred[,2:8],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemad.pourcent.pred.std=nemad.pourcent.pred[,2:8]/vp.nemad.pourcent.pred[1] # pondÈration du tableau contaminants par la premiËre vp#
+BCA<-bca(MFA,fact,scannf=F,nf=2)
+BCA$ratio
+varexp<-BCA$eig*100/sum(BCA$eig)
 
-##NEMA POURCENTAGE BIOMASS GT##
-vp.nemab.pourcent.bact=dudi.pca(nemab.pourcent.bact[,2:17],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.pourcent.bact.std=nemab.pourcent.bact[,2:17]/vp.nemab.pourcent.bact[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemab.pourcent.detri=dudi.pca(nemab.pourcent.detri[,2:27],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.pourcent.detri.std=nemab.pourcent.detri[,2:27]/vp.nemab.pourcent.detri[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemab.pourcent.brou=dudi.pca(nemab.pourcent.brou[,2:26],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.pourcent.brou.std=nemab.pourcent.brou[,2:26]/vp.nemab.pourcent.brou[1] # pondÈration du tableau contaminants par la premiËre vp#
-vp.nemab.pourcent.pred=dudi.pca(nemab.pourcent.pred[,2:8],scannf=F,nf=2)$eig # extraction des valeurs propres#
-nemab.pourcent.pred.std=nemab.pourcent.pred[,2:8]/vp.nemab.pourcent.pred[1] # pondÈration du tableau contaminants par la premiËre vp#
+randtest(BCA)
 
+#####################
+# Plots
+#####################
 
-# final dataset#
-DATA=cbind(nemab.pourcent.bact.std,nemab.pourcent.detri.std,nemab.pourcent.brou.std,nemab.pourcent.pred.std)#
-DATA$sites=substr(nemad.pourcent.bact$groupe,1,2)#
-DATA$horizon=substr(nemad.pourcent.bact$groupe,4,4)#
-DATA$core=substr(nemad.pourcent.bact$groupe,3,3)#
-names(DATA)#
-bloc=c(dim(nemab.pourcent.bact.std)[2],dim(nemab.pourcent.detri.std)[2],dim(nemab.pourcent.brou.std)[2],dim(nemab.pourcent.pred.std)[2])
-
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-# pca dataset
-DATA2=cbind(nemab.pourcent.bact[,2:17],nemab.pourcent.detri[,2:27],nemab.pourcent.brou[,2:26],nemab.pourcent.pred[,2:8])#
-DATA2$sites=substr(nemad.pourcent.bact$groupe,1,2)#
-DATA2$horizon=substr(nemad.pourcent.bact$groupe,4,4)#
-DATA2$core=substr(nemad.pourcent.bact$groupe,3,3)#
-names(DATA2)#
-bloc=c(dim(nemab.pourcent.bact[,2:17])[2],dim(nemab.pourcent.detri[,2:27])[2],dim(nemab.pourcent.brou[,2:26])[2],dim(nemab.pourcent.pred[,2:8])[2])
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-# MFA new script
-names(DATA2)
 par(layout(matrix(c(1,2,3,3),nrow=2)),mar=c(4,4,4,4))
-MFA2=dudi.pca(DATA2[,1:74],col.w=rep(c(1/vp.nemad.pourcent.bact[1],1/vp.nemad.pourcent.detri[1],1/vp.nemad.pourcent.brou[1],1/vp.nemad.pourcent.pred[1]),bloc),scannf=F,nf=2)
-varexp1=MFA2$eig*100/sum(MFA2$eig)#
-facteur1=factor(paste(DATA2$site))#
-facteur2=factor(paste(DATA2$site,DATA2$horizon))#
-facteur3=factor(paste(DATA2$horizon))#
-plot(MFA2$li[,2]~MFA2$li[,1],pch=21,cex=2,col="white",bg=rainbow(length(levels(facteur1)))[facteur1],xlab=paste("Axis 1 : ",round(varexp1[1],2),"%"),ylab=paste("Axis 2 : ",round(varexp1[2],2),"%"),main="MFA scores")#
-ordihull(MFA2$li,facteur2,lab=T)#
 
-# Between class analysis (analyse supervisÈe - FACTEUR 1 SITES#
-BCA2=bca(MFA2,facteur1,scannf=F,nf=2)#
-BCA2$ratio#
-varexp2=BCA2$eig*100/sum(BCA2$eig)#
-plot(BCA2$ls[,2]~BCA2$ls[,1],pch=21,cex=2,col="white",bg=rainbow(length(levels(facteur1)))[facteur1],xlab=paste("Axis 1 : ",round(varexp2[1],2),"%"),ylab=paste("Axis 2 : ",round(varexp2[2],2),"%"),main="BCA scores")#
-legend("topleft",c("instrumental variable = Sites","Total inertia explained = 12.5%"),cex=0.8,box.lty=0)
-ordihull(BCA2$ls,facteur1,lab=T)#
-plot(BCA2$co[,2]~BCA2$co[,1],type="n",xlab=paste("Axis 1 : ",round(varexp2[1],2),"%"),ylab=paste("Axis 2 : ",round(varexp2[2],2),"%"),ylim=c(-1,1),xlim=c(-1,1),main="BCA loadings")#
-BCA2$co$col=rep(my.palette(4),bloc)#
-newco=BCA2$co[abs(BCA2$co[,1])>0 | abs(BCA2$co[,2])>0,]#
-arrows(x0=0,y0=0,x1=BCA2$co[,1],y1=BCA2$co[,2],col="lightgrey",length=0.1)#
-cos2 <- as.matrix(BCA2$co[,1:2])*as.matrix(BCA2$co[,1:2]) # calcul des cos2 pour filtrer les variables
-newco <- BCA2$co[cos2[,1]>0.2 | cos2[,2]>0.2,] # utiliser une valeur de cos2 pour filtrer (ici 0.5)
-oldco <- BCA2$co[cos2[,1]<0.2 & cos2[,2]<0.2,]
-text(newco[,1], newco[,2],rownames(newco),col=newco$col,cex=1.7)
-text(oldco[,1], oldco[,2],rownames(oldco),col=alpha(oldco$col,0.3),cex=1.5) # la valeur alpha contr√¥le la transparence des variables < au seuil de cos2
-summary(BCA2) ### AJOUT
-#draw.circle(0,0,1)#
-#draw.circle(0,0,0.3,lty="dashed")#
-#text(newco[,1], newco[,2],rownames(newco),col=newco[,1],cex=0.6) # 4 = nombre de martrices dans le tableau DATA#
+plot(MFA$li[,2]~MFA$li[,1],
+     pch=21,cex=2,col="white",
+     bg=rainbow(length(levels(fact)))[fact],
+     xlab=paste("Axis 1 : ",round(varexp1[1],2),"%"),
+     ylab=paste("Axis 2 : ",round(varexp1[2],2),"%"),
+     main="MFA scores")
+
+ordihull(MFA$li,fact,lab=T)
+
+plot(BCA$ls[,2]~BCA$ls[,1],
+     pch=21,cex=2,col="white",
+     bg=rainbow(length(levels(fact)))[fact],
+     xlab=paste("Axis 1 : ",round(varexp2[1],2),"%"),
+     ylab=paste("Axis 2 : ",round(varexp2[2],2),"%"),
+     main="BCA scores")
+
+legend("topleft",
+       c("instrumental variable = Sites",
+         "Total inertia explained = 14.3%",
+        "p=0.001"),cex=0.8,box.lty=0)
+
+ordihull(BCA$ls,fact,lab=T)
+
+plot(BCA$co[,2]~BCA$co[,1],type="n",
+     xlab=paste("Axis 1 : ",round(varexp2[1],2),"%"),
+     ylab=paste("Axis 2 : ",round(varexp2[2],2),"%"),
+     ylim=c(-1,1),xlim=c(-1,1),
+     main="BCA loadings")
+
+arrows(x0=0,y0=0,x1=BCA$co[,1],y1=BCA$co[,2],col="lightgrey",length=0.1)
+
+cos2 <- as.matrix(BCA$co[,1:2])*as.matrix(BCA$co[,1:2])
+
+var.group<-factor(rep(c("bac","detri","brou","pred"),bloc),
+                  levels=c("bac","detri","brou","pred"))
+BCA$co$col<-my.palette(length(bloc))[var.group]
+
+newco <- BCA$co[cos2[,1]>0.2 | cos2[,2]>0.2,] 
+oldco <- BCA$co[cos2[,1]<0.2 & cos2[,2]<0.2,]
+
+text(newco[,1], newco[,2],rownames(newco),col=newco$col,cex=1.2)
+text(oldco[,1], oldco[,2],rownames(oldco),col=alpha(oldco$col,0.3),cex=0.8) # la valeur alpha contr√¥le la transparence des variables < au seuil de cos2
+summary(BCA)
 abline(h=0,lty="dashed")
 abline(v=0,lty="dashed")
- # 4 = nombre de martrices dans le tableau DATA#
-legend("topleft",c("Bacterivorous", "Detritivores", "Grazers","Omnivorous-Predators"),text.col=my.palette(length(bloc)),cex=1.2,box.lty=0)
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+legend("topleft",
+       c("Bacterivorous",
+         "Detritivores",
+         "Grazers",
+         "Omnivorous-Predators"),
+       text.col=my.palette(length(bloc)),cex=0.8,box.lty=0)

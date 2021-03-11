@@ -8,15 +8,9 @@
 #####################
 # PACKAGES
 #####################
-
-library(ggplot2)
 library(ade4)
 library(vegan)
-library(RVAideMemoire)
-library(emmeans)
-library(pls)
-library(plotrix)
-library(factoextra)
+library(scales)
 
 #####################
 # AESTHETICS
@@ -124,7 +118,10 @@ plot(BCA$co[,2]~BCA$co[,1],type="n",
 arrows(x0=0,y0=0,x1=BCA$co[,1],y1=BCA$co[,2],col="lightgrey",length=0.1)
 
 cos2 <- as.matrix(BCA$co[,1:2])*as.matrix(BCA$co[,1:2]) 
-BCA$co$col<-my.palette(length(bloc))[factor(rep(c("conta","pig","bact","enviro","CHN"),bloc))]
+
+var.group<-factor(rep(c("conta","pig","bact","enviro","CHN"),bloc),
+                  levels=c("enviro","conta","bact","CHN","pig"))
+BCA$co$col<-my.palette(length(bloc))[var.group]
 
 newco <- BCA$co[cos2[,1]>0.4 | cos2[,2]>0.4,]
 oldco <- BCA$co[cos2[,1]<0.4 & cos2[,2]<0.4,]
@@ -132,11 +129,12 @@ oldco <- BCA$co[cos2[,1]<0.4 & cos2[,2]<0.4,]
 text(newco[,1], newco[,2],rownames(newco),col=newco$col,cex=1.2)
 text(oldco[,1], oldco[,2],rownames(oldco),col=alpha(oldco$col,0.3),cex=0.8)
 abline(v=0,lty="dashed")
+abline(h=0,lty="dashed")
 
 legend("topleft",
-       c("Prokaryotic biomass",
-         "Organic matter",
+       c("Physicochemical parameters",
          "Contaminants",
-         "Physicochemical parameters",
+         "Prokaryotic biomass",
+         "Organic matter",
          "Pigments"),
        text.col=my.palette(length(bloc)),cex=0.8,box.lty=0)
