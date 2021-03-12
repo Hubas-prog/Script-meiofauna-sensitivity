@@ -6,7 +6,7 @@ First assessment of the benthic meiofauna sensitivity to low human-impacted mang
 
 by  Claire Michelet, Daniela Zeppilli, Cédric Hubas, Elisa Baldrighi, Philippe Cuny, Guillaume Dirberg, Cécile Militon, Romain Walcker, Dominique Lamy, Ronan Jézéquel, Justine Receveur, Franck Gilbert, Amonda El Houssainy, Aurélie Dufour, Lars-Eric Heimbürger-Boavida, Isabelle Bihannic, Léa Sylvi, Baptiste Vivier, Emma Michaud
 
-To be published in Forest (MDPI)
+To be published in Forest (MDPI) : https://www.mdpi.com/journal/forests
 
 The current deposit corresponds only to the statistical analysis. The raw data are available at the following address: https://doi.org/10.5281/zenodo.4592299
 
