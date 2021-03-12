@@ -72,6 +72,7 @@ MFA<-dudi.pca(DATA[,1:58],col.w=rep(c(1/eig.conta[1],
 
 varexp1<-MFA$eig*100/sum(MFA$eig)
 fact<-factor(DATA$sites)
+fact2<-factor(paste(DATA$sites,DATA$layer))
 
 #####################
 # Between class MFA (supervised MFA analysis with factor = sites)
@@ -95,7 +96,7 @@ plot(MFA$li[,2]~MFA$li[,1],
      xlab=paste("Axis 1 : ",round(varexp1[1],2),"%"),
      ylab=paste("Axis 2 : ",round(varexp1[2],2),"%"),
      main="MFA scores")
-ordihull(MFA$li,fact,lab=T)
+ordihull(MFA$li,fact2,lab=T)
 
 plot(BCA$ls[,2]~BCA$ls[,1],
      pch=21,cex=2,col="white",

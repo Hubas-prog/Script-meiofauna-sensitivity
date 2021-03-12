@@ -22,16 +22,16 @@ my.palette<-colorRampPalette(c("purple","black","red1","green3","blue"))
 #####################
 
 # Bacterivorous nematodes - density (in %)
-nemad.pourcent.bact<-read.csv("Nematodes_pourcent_bacterivores.csv",
+nemad.pourcent.bact<-read.csv("Nematodes_biomasscm3_pourcent_bacterivores.csv",
                               h=T,sep=";",dec=",")
 # Detritivorous nematodes - density (in %)
-nemad.pourcent.detri<-read.csv("Nematodes_pourcent_detritivores.csv",
+nemad.pourcent.detri<-read.csv("Nematodes_biomasscm3_pourcent_detritivores.csv",
                                h=T,sep=";",dec=",")
 # Grazers nematodes - density (in %)
-nemad.pourcent.brou<-read.csv("Nematodes_pourcent_brouteurs.csv",
+nemad.pourcent.brou<-read.csv("Nematodes_biomasscm3_pourcent_brouteurs.csv",
                               h=T,sep=";",dec=",")
 # Omnivorous/Predators nematodes - density (in %)
-nemad.pourcent.pred<-read.csv("Nematodes_pourcent_predateurs.csv",
+nemad.pourcent.pred<-read.csv("Nematodes_biomasscm3_pourcent_predateurs.csv",
                               h=T,sep=";",dec=",")
 
 # verification that all statistical individuals are paired
@@ -48,7 +48,7 @@ data.frame(nemad.pourcent.bact[,1],
 # final datasett
 DATA<-cbind(nemad.pourcent.bact[,2:17],
             nemad.pourcent.detri[,2:27],
-            nemad.pourcent.brou[,2:27],
+            nemad.pourcent.brou[,2:26],
             nemad.pourcent.pred[,2:8])
 
 DATA$sites<-substr(nemad.pourcent.bact$groupe,1,2)
@@ -57,9 +57,9 @@ DATA$core<-substr(nemad.pourcent.bact$groupe,3,3)
 names(DATA)
 
 bloc<-c(dim(nemad.pourcent.bact[,2:17])[2],
-       dim(nemad.pourcent.detri[,2:27])[2],
-       dim(nemad.pourcent.brou[,2:27])[2],
-       dim(nemad.pourcent.pred[,2:8])[2])
+        dim(nemad.pourcent.detri[,2:27])[2],
+        dim(nemad.pourcent.brou[,2:26])[2],
+        dim(nemad.pourcent.pred[,2:8])[2])
 
 #####################
 # Multiple FActor Analysis (unsupervised)
@@ -70,14 +70,14 @@ eig.nemad.pourcent.bact<-dudi.pca(nemad.pourcent.bact[,2:17],
                                   scannf=F,nf=2)$eig 
 eig.nemad.pourcent.detri<-dudi.pca(nemad.pourcent.detri[,2:27],
                                    scannf=F,nf=2)$eig
-eig.nemad.pourcent.brou<-dudi.pca(nemad.pourcent.brou[,2:27],
+eig.nemad.pourcent.brou<-dudi.pca(nemad.pourcent.brou[,2:26],
                                   scannf=F,nf=2)$eig 
 eig.nemad.pourcent.pred<-dudi.pca(nemad.pourcent.pred[,2:8],
                                   scannf=F,nf=2)$eig
 
 # MFA
 names(DATA)
-MFA<-dudi.pca(DATA[,1:75],col.w=rep(c(1/eig.nemad.pourcent.bact[1],
+MFA<-dudi.pca(DATA[,1:74],col.w=rep(c(1/eig.nemad.pourcent.bact[1],
                                       1/eig.nemad.pourcent.detri[1],
                                       1/eig.nemad.pourcent.brou[1],
                                       1/eig.nemad.pourcent.pred[1]),
@@ -87,6 +87,7 @@ MFA<-dudi.pca(DATA[,1:75],col.w=rep(c(1/eig.nemad.pourcent.bact[1],
 
 varexp<-MFA$eig*100/sum(MFA$eig)
 fact<-factor(DATA$sites)
+fact2<-factor(paste(DATA$sites,DATA$layer))
 
 #####################
 # Between class MFA (supervised MFA analysis with factor = sites)
@@ -111,7 +112,7 @@ plot(MFA$li[,2]~MFA$li[,1],
      ylab=paste("Axis 2 : ",round(varexp[2],2),"%"),
      main="MFA scores")
 
-ordihull(MFA$li,fact,lab=T)
+ordihull(MFA$li,fact2,lab=T)
 
 plot(BCA$ls[,2]~BCA$ls[,1],
      pch=21,cex=2,col="white",
@@ -122,8 +123,8 @@ plot(BCA$ls[,2]~BCA$ls[,1],
 
 legend("topleft",
        c("instrumental variable = Sites",
-         "Total inertia explained = 14.3%",
-        "p=0.001"),cex=0.8,box.lty=0)
+         "Total inertia explained = 12.5%",
+         "p=0.001"),cex=0.8,box.lty=0)
 
 ordihull(BCA$ls,fact,lab=T)
 
