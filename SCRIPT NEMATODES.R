@@ -1,8 +1,9 @@
 ########################### SCRIPT ################################
+# Supplementary Material of the following article :
 # First assessment of the benthic meiofauna sensitivity to low human-impacted mangroves in French Guiana
-# by : Claire Michelet, Daniela Zeppilli, Cédric Hubas, Elisa Baldrighi, Philippe Cuny, Guillaume Dirberg, Cécile Militon, Romain Walcker, Dominique Lamy, Ronan Jézéquel, Justine Receveur, Franck Gilbert, Amonda El Houssainy, Aurélie Dufour, Lars-Eric Heimbürger-Boavida, Isabelle Bihannic, Léa Sylvi, Baptiste Vivier, Emma Michaud
-# For publication in Forest (MDPI)
-# *Corresponding author : emma.michaud@univ-brest.fr
+# Claire Michelet, Daniela Zeppilli, Cédric Hubas, Elisa Baldrighi, Philippe Cuny, Guillaume Dirberg, Cécile Militon, Romain Walcker, Dominique Lamy, Ronan Jézéquel, Justine Receveur, Franck Gilbert, Amonda El Houssainy, Aurélie Dufour, Lars-Eric Heimbürger-Boavida, Isabelle Bihannic, Léa Sylvi, Baptiste Vivier, Emma Michaud
+# Forests. 2021; 12(3):338.
+# https://doi.org/10.3390/f12030338
 ########################### SCRIPT ################################
 
 #####################
