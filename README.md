@@ -2,9 +2,9 @@ R scripts of the statistical analysis for the article entitled:
 
 # First assessment of the benthic meiofauna sensitivity to low human-impacted mangroves in French Guiana
 
-by  Claire Michelet, Daniela Zeppilli, Cédric Hubas, Elisa Baldrighi, Philippe Cuny, Guillaume Dirberg, Cécile Militon, Romain Walcker, Dominique Lamy, Ronan Jézéquel, Justine Receveur, Franck Gilbert, Amonda El Houssainy, Aurélie Dufour, Lars-Eric Heimbürger-Boavida, Isabelle Bihannic, Léa Sylvi, Baptiste Vivier, Emma Michaud
+Citation : Michelet C, Zeppilli D, Hubas C, Baldrighi E, Cuny P, Dirberg G, Militon C, Walcker R, Lamy D, Jézéquel R, Receveur J, Gilbert F, Houssainy AE, Dufour A, Heimbürger-Boavida L-E, Bihannic I, Sylvi L, Vivier B, Michaud E. First Assessment of the Benthic Meiofauna Sensitivity to Low Human-Impacted Mangroves in French Guiana. Forests. 2021; 12(3):338.
 
-To be published in Forest (MDPI) : https://www.mdpi.com/journal/forests
+Published in Forest (MDPI) : https://doi.org/10.3390/f12030338
 
 The current deposit corresponds only to the statistical analysis. It gives details about the statistical procedure that was developped for this article and called Between Class Multiple Factor Analysis (BC-MFA). The raw data are available at the following address: https://doi.org/10.5281/zenodo.4592299
 
